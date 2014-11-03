@@ -6,8 +6,8 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    Plugin_Name
- * @subpackage Plugin_Name/public
+ * @package    WP API Search
+ * @subpackage wp-api-search/public
  */
 
 /**
@@ -16,11 +16,11 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the dashboard-specific stylesheet and JavaScript.
  *
- * @package    Plugin_Name
- * @subpackage Plugin_Name/public
- * @author     Your Name <email@example.com>
+ * @package    WP API Search
+ * @subpackage wp-api-search/public
+ * @author     Corey Burns <coreyaburns@gmail.com>
  */
-class Plugin_Name_Public {
+class WP_API_Search_Public {
 
 	/**
 	 * The ID of this plugin.

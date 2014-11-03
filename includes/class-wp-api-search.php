@@ -58,6 +58,15 @@ class WP_API_Search {
 	protected $version;
 
 	/**
+	 * Array of setting options.
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      array    $settings_arr    The setting options array for the plugin.
+	 */
+	protected $settings_arr;	
+
+	/**
 	 * Define the core functionality of the plugin.
 	 *
 	 * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -70,11 +79,40 @@ class WP_API_Search {
 
 		$this->plugin_name = 'wp-api-search';
 		$this->version = '0.0.1';
+		$this->settings_setup();
 
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+
+		//$this->settings_arr = $this->settings_setup();
+		
+
+		//print_r( $this->settings_arr );
+
+  //  	$settings_arr = array(
+  //  			'Banner Heading',
+		// // 	'Google API Key',
+		// // 	'Google Search Engine ID',
+  //  	);
+
+
+		// foreach($settings_arr as $k=>$v){ 
+		// 		foreach($settings_arr->$k as $val) {
+		// 				//echo $val;
+
+		// 		}
+		// }
+
+//print $settings_arr->label->key3; // outputs "baz"!
+		// $this->{$settings_arr} = new ArrayObject(array(
+		// 	'Banner Heading',
+		// 	'Google API Key',
+		// 	'Google Search Engine ID',
+		// ) );
+
+		//print_r($this->settings_arr);
 
 	}
 
@@ -117,7 +155,7 @@ class WP_API_Search {
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-plugin-name-public.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-wp-api-search-public.php';
 
 		$this->loader = new WP_API_Search_Loader();
 
@@ -150,7 +188,7 @@ class WP_API_Search {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new WP_API_Search_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new WP_API_Search_Admin( $this->get_plugin_name(), $this->get_version(), $this->get_settings_arr() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
@@ -169,13 +207,46 @@ class WP_API_Search {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new Plugin_Name_Public( $this->get_plugin_name(), $this->get_version() );
+
+		$plugin_public = new WP_API_Search_Public( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
+		//echo settings_fields('wpapisearch');
 	}
 
+	/**
+	 * Setup the settings options that will be displayed
+	 *
+	 * @since 0.0.1
+	 */
+	private function settings_setup() {
+
+		$settings_arr = array(
+			'Banner Heading',
+			'Google API Key',
+			'Google Search Engine ID',
+		);
+
+		$settings_assc_arr = array();
+		
+		// the label is used for id or name in add_settings_field, register_setting. 
+		// value is used for frontend admin display on settings page.
+		foreach($settings_arr as $v) {
+			$name_id = strtolower(implode('_', explode(' ', $v)));
+			$settings_assc_arr[$name_id] = $v;
+		}
+
+		$this->settings_arr = (object) array(
+     'name_id' => (object) $settings_assc_arr
+   	);
+
+		//return $this->settings_arr;
+		// foreach($this->settings_arr->name_id as $id => $display_txt) {
+		// 	echo $id . ' ' . $display_txt;
+		// }
+	}
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
@@ -215,5 +286,15 @@ class WP_API_Search {
 	public function get_version() {
 		return $this->version;
 	}
+
+	/**
+	 * Retrieve settings array
+	 *
+	 * @since 		0.0.1
+	 * @return 		array 		Array of settings option labels
+	 */
+	public function get_settings_arr() {
+		return $this->settings_arr;
+	} 
 
 }

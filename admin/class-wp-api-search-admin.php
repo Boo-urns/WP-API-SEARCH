@@ -41,16 +41,26 @@ class WP_API_Search_Admin {
 	private $version;
 
 	/**
+	 * The settings option array (labels) for this plugin
+	 *
+	 * @since    0.0.1
+	 * @access   private
+	 * @var      array    $settings_arr    he setting options array for the plugin.
+	 */
+	private $settings_arr;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
 	 * @var      string    $plugin_name       The name of this plugin.
 	 * @var      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( $plugin_name, $version, $settings_arr ) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+		$this->settings_arr = $settings_arr;
 
 	}
 
@@ -127,6 +137,8 @@ class WP_API_Search_Admin {
 	/**
 		* Register and build setting fields
 		*
+		* TODO Extend the foreach to look for proper labels for extensible in the future
+		*
 		* @since 0.0.1
 		*/
 	public function register_and_build_setting_fields() {
@@ -135,30 +147,26 @@ class WP_API_Search_Admin {
 		// add_settings_section - id, title, callback, page
 
 		// The settings labels (id, arg is created from these)
-		$settings_arr = array( 
-			'Banner Heading', 
-			'Google API Key',
-			'Google Search Engine ID'
-		);
+		// TO DO
+		foreach($this->settings_arr as $k=>$v){ 
+				foreach($this->settings_arr->$k as $id => $val) {
+						add_settings_field(
+							$id, 						// setting option id
+							$val,  						// label
+							array( $this, 'setting_fields' ), // callback
+							'wpapisearch', 	// page
+							'main_section',	// section
+							array( $id )	 	// the $args
+						);
 
-		foreach($settings_arr as $v) {
-			$id = strtolower(implode('_', explode(' ', $v)));
-
-			add_settings_field(
-				$id, 						// setting option id
-				$v,  						// label
-				array( $this, 'setting_fields' ), // callback
-				'wpapisearch', 	// page
-				'main_section',	// section
-				array( $id )	 	// the $args
-			);
-
-			register_setting(
-					'wpapisearch', // option group
-					$id,					 // option name
-					array( $this, 'validate_setting' ) // sanitize callback
-			);
+						register_setting(
+								'wpapisearch', // option group
+								$id,					 // option name
+								array( $this, 'validate_setting' ) // sanitize callback
+						);
+				}
 		}
+
 	}
 
 
