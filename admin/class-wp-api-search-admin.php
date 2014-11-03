@@ -100,7 +100,6 @@ class WP_API_Search_Admin {
 
 	}
 
-
 	/**
 	 * Settings options page creation
 	 *
@@ -113,7 +112,9 @@ class WP_API_Search_Admin {
 	}
 
 	/** 
-	  * Build setting page
+	  * Build setting page 
+	  *
+	  * Frontend for the settings page
 	  *
 	  * @since 0.0.1
 	  */
@@ -123,4 +124,54 @@ class WP_API_Search_Admin {
 
 	}
 
+	/**
+		* Register and build setting fields
+		*
+		* @since 0.0.1
+		*/
+	public function register_and_build_setting_fields() {
+
+		add_settings_section('main_section', '', array($this, 'section_cb'), 'wpapisearch');
+		// add_settings_section - id, title, callback, page
+
+		// The settings labels (id, arg is created from these)
+		$settings_arr = array( 
+			'Banner Heading', 
+			'Google API Key',
+			'Google Search Engine ID'
+		);
+
+		foreach($settings_arr as $v) {
+			$id = strtolower(implode('_', explode(' ', $v)));
+
+			add_settings_field(
+				$id, 						// setting option id
+				$v,  						// label
+				array( $this, 'setting_fields' ), // callback
+				'wpapisearch', 	// page
+				'main_section',	// section
+				array( $id )	 	// the $args
+			);
+
+			register_setting(
+					'wpapisearch', // option group
+					$id,					 // option name
+					array( $this, 'validate_setting' ) // sanitize callback
+			);
+		}
+	}
+
+
+	public function setting_fields($args) {
+
+			$option = get_option($args[0]);  
+			echo "<input name='$args[0]' type='text' value='$option' />";
+	}
+
+	public function validate_setting($plugin_options) {  
+		return $plugin_options;
+	}
+
+	// necessary to avoid throwing an error from add_settings_section
+	public function section_cb(){ }
 }

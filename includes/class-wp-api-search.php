@@ -155,8 +155,9 @@ class WP_API_Search {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
+		// Admin Settings
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'create_setting_options_page' );
-
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_and_build_setting_fields' );
 	}
 
 	/**
