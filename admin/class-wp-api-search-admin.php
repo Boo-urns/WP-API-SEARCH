@@ -138,6 +138,7 @@ class WP_API_Search_Admin {
 		* Register and build setting fields
 		*
 		* TODO Extend the foreach to look for proper labels for extensible in the future
+		* Possibly move page and section parameters for add_settings_field, register_setting to $this->settings_arr on class-wp-api-search.php
 		*
 		* @since 0.0.1
 		*/
