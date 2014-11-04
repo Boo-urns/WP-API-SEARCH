@@ -55,12 +55,15 @@ class WP_API_Search_Admin {
 	 * @since    1.0.0
 	 * @var      string    $plugin_name       The name of this plugin.
 	 * @var      string    $version    The version of this plugin.
+	 * @var 		 array 		 $settings_arr		The setting options 
+	 * @var 		 string 	 $common_words 		Common words ignored option label.
 	 */
 	public function __construct( $plugin_name, $version, $settings_arr ) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		$this->settings_arr = $settings_arr;
+		$this->common_words = 'common_words_ignored';
 
 	}
 
@@ -132,6 +135,10 @@ class WP_API_Search_Admin {
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/wp-api-search-options-page-display.php';
 
+
+		// GET COMMON WORD LIST
+		// $word_list = get_option($this->common_words);
+
 	}
 
 	/**
@@ -170,15 +177,64 @@ class WP_API_Search_Admin {
 
 	}
 
-
 	public function setting_fields($args) {
 
-			$option = get_option($args[0]);  
-			echo "<input name='$args[0]' type='text' value='$option' />";
+		$option = get_option($args[0]);  
+		echo "<input name='$args[0]' type='text' value='$option' />";
 	}
 
-	public function validate_setting($plugin_options) {  
-		return $plugin_options;
+
+		/**
+		* Register and build setting post type fields
+		*
+		* @since 0.0.1
+		*/
+	public function register_and_build_setting_post_type_fields() {
+
+		// The settings labels (id, arg is created from these)
+		$id = 'wp_api_search_post_types';
+		$val = 'Searchable Post Types';
+
+		add_settings_field(
+			$id, 						// setting option id
+			$val,  						// label
+			array( $this, 'setting_post_type_fields' ), // callback
+			'wpapisearch', 	// page
+			'main_section',	// section
+			array( $id )	 	// the $args
+		);
+
+		register_setting(
+				'wpapisearch', // option group
+				$id,					 // option name
+				array( $this, 'validate_setting' ) // sanitize callback
+		);
+
+	}
+
+	public function setting_post_type_fields($args) {
+		$post_type_args = array(
+    	'public'   => true,
+		);
+		$output = 'names'; // names or objects, note names is the default
+		$operator = 'or'; // 'and' or 'or'
+
+		$post_types = get_post_types( $post_type_args, $output, $operator ); 
+
+		$option = get_option($args[0]);
+
+		foreach ( $post_types  as $post_type ) { ?>
+
+			<input type="checkbox" id="<?php echo $post_type; ?>" name="<?php echo $args[0]; ?>[]" value="<?php echo $post_type; ?>" <?php if(in_array($post_type, $option)) { echo "checked"; } ?>>
+			<label for="<?php echo $post_type; ?>"><?php echo $post_type; ?></label><br>
+		
+		<?php
+		}
+
+	}
+
+	public function validate_setting($options) {  
+		return $options;
 	}
 
 	// necessary to avoid throwing an error from add_settings_section

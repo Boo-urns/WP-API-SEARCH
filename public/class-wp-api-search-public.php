@@ -97,7 +97,22 @@ class WP_API_Search_Public {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/plugin-name-public.js', array( 'jquery' ), $this->version, false );
+		
+		wp_enqueue_script('wp-api-search-lookup', plugin_dir_url( __FILE__ ) . 'js/wp-api-search-lookup.js', array( 'jquery' ), $this->version, true);
 
+
+		$options_arr = array(
+			'google_api_key',
+			'google_search_engine_id',
+			'wp_api_search_post_types',
+		);
+
+		$options_assc_arr = array();
+		foreach($options_arr as $k=>$v) {
+			$options_assc_arr[$v] = get_option($v);
+		}
+		$options_assc_arr['test'] = __('NEW TEST');
+		wp_localize_script('wp-api-search-lookup', 'wp_api_search_vars', $options_assc_arr);
 	}
 
 }

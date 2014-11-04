@@ -3,8 +3,7 @@
 /**
  * Fired during plugin activation
  *
- * @link       http://example.com
- * @since      1.0.0
+ * @since      0.0.1
  *
  * @package    WP API Search
  * @subpackage WP API Search/includes
@@ -15,7 +14,7 @@
  *
  * This class defines all code necessary to run during the plugin's activation.
  *
- * @since      1.0.0
+ * @since      0.0.1
  * @package    WP API Search
  * @subpackage WP API Search/includes
  * @author     Corey Burns <coreyaburns@gmail.com>
@@ -23,14 +22,19 @@
 class WP_API_Search_Activator {
 
 	/**
-	 * Short Description. (use period)
+	 * Common words to be ignored
 	 *
-	 * Long Description.
+	 * Sets up option for common words to be ignored.
 	 *
-	 * @since    1.0.0
+	 * @since    0.0.1
 	 */
 	public static function activate() {
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/func-initial-common-words.php';
+		$common_words = common_words();
 
+		add_option('common_words_ignored', $common_words);
+		// add_option does not overwrite if this plugin has been enabled previously.
 	}
 
+	
 }

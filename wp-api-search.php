@@ -36,6 +36,13 @@ register_activation_hook( __FILE__, array( 'WP_API_Search_Activator', 'activate'
 /** This action is documented in includes/class-plugin-name-deactivator.php */
 register_deactivation_hook( __FILE__, array( 'WP_API_Search_Deactivator', 'deactivate' ) );
 
+
+/**
+ * Custom widget display for the search form
+ * @since 		0.0.1
+ */
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-api-search-widget.php'; 
+
 /**
  * The core plugin class that is used to define internationalization,
  * dashboard-specific hooks, and public-facing site hooks.

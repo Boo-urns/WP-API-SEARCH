@@ -79,40 +79,12 @@ class WP_API_Search {
 
 		$this->plugin_name = 'wp-api-search';
 		$this->version = '0.0.1';
-		$this->settings_setup();
+		$this->settings_setup(); // sets up $this->settings_arr;
 
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
-		//$this->settings_arr = $this->settings_setup();
-		
-
-		//print_r( $this->settings_arr );
-
-  //  	$settings_arr = array(
-  //  			'Banner Heading',
-		// // 	'Google API Key',
-		// // 	'Google Search Engine ID',
-  //  	);
-
-
-		// foreach($settings_arr as $k=>$v){ 
-		// 		foreach($settings_arr->$k as $val) {
-		// 				//echo $val;
-
-		// 		}
-		// }
-
-//print $settings_arr->label->key3; // outputs "baz"!
-		// $this->{$settings_arr} = new ArrayObject(array(
-		// 	'Banner Heading',
-		// 	'Google API Key',
-		// 	'Google Search Engine ID',
-		// ) );
-
-		//print_r($this->settings_arr);
 
 	}
 
@@ -196,6 +168,9 @@ class WP_API_Search {
 		// Admin Settings
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'create_setting_options_page' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_and_build_setting_fields' );
+
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_and_build_setting_post_type_fields' );
+
 	}
 
 	/**
@@ -213,11 +188,10 @@ class WP_API_Search {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
-		//echo settings_fields('wpapisearch');
 	}
 
 	/**
-	 * Setup the settings options that will be displayed
+	 * Setup the admin settings options that will be displayed
 	 *
 	 * @since 0.0.1
 	 */
@@ -242,11 +216,8 @@ class WP_API_Search {
      'name_id' => (object) $settings_assc_arr
    	);
 
-		//return $this->settings_arr;
-		// foreach($this->settings_arr->name_id as $id => $display_txt) {
-		// 	echo $id . ' ' . $display_txt;
-		// }
 	}
+
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
