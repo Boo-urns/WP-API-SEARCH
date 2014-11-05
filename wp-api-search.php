@@ -31,7 +31,17 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-api-search-activat
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-api-search-deactivator.php';
 
 /** This action is documented in includes/class-wp-api-search-activator.php */
-register_activation_hook( __FILE__, array( 'WP_API_Search_Activator', 'activate' ) );
+//register_activation_hook( __FILE__, array( 'WP_API_Search_Activator', 'activate' ) );
+if( !class_exists( 'WP_API_Search_Activator' ) ) {
+  require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-api-search-activator.php';
+}
+
+if( class_exists( 'WP_API_Search_Activator' ) ) {
+  $activate = new WP_API_Search_Activator();
+  // Register for activation
+  register_activation_hook( __FILE__, array( &$activate, 'activate' ));
+  	//register_activation_hook( __FILE__, array( 'WP_API_Search_Activator', 'activate' ) );
+}
 
 /** This action is documented in includes/class-plugin-name-deactivator.php */
 register_deactivation_hook( __FILE__, array( 'WP_API_Search_Deactivator', 'deactivate' ) );

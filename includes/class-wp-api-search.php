@@ -198,7 +198,6 @@ class WP_API_Search {
 	private function settings_setup() {
 
 		$settings_arr = array(
-			'Banner Heading',
 			'Google API Key',
 			'Google Search Engine ID',
 		);
