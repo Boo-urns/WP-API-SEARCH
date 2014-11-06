@@ -34,6 +34,7 @@ class wp_api_search_widget extends WP_Widget {
 
 		echo "<form id='wp_api_search'><label for='wp_api_search_widget'>Search</label>
 					<input type='text' id='wp_api_search_input' name='wp_api_search_widget' placeholder='$placeholder'>
+					<input type='text' id='wp_api_search_spelling_suggestion' name='wp_api_search_spelling_suggestion' style=''>
 					<input type='submit' id='wp_api_search_submit' value='Search'></form>";
 
 		// This is where you run the code and display the output

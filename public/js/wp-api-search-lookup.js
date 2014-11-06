@@ -14,16 +14,12 @@
 
 	});
 
-	
-
-
 
 
 	// typeahead bloodhound 
 	var postsLookup = new Bloodhound({
 	  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
 	  queryTokenizer: Bloodhound.tokenizers.whitespace,
-	  //prefetch: '../data/films/post_1960.json',
 	  remote: {
 	  	url: 'http://localhost:8080/wp-json/posts/?type[]=wp-api-search-term&filter[orderby]=menu_order&filter[s]=%QUERY',
 	  }
@@ -48,45 +44,61 @@
 		  }
 		}
 	).keypress(function(e) {
-		alert(e);
-      if ( 13 == e.which ) {
-      		alert('enter hit!');
-          //$(this).parents( 'form' ).submit();
-          return false;
-      }
+		if ( 13 == e.which ) {
+			$(this).parents( 'form' ).submit();
+			return false;
+		}
 	}).on('typeahead:empty', function () { // typeahead:empty is a custom method. (not in typeahead.js)
-		// TODO Pull input value
-		var word = 'catrpillr';
-		
-		suggested_spelling(word).done(function(response) {
-	      if(response.spelling) {
-	      	console.log(response.spelling.correctedQuery);
-	      	
-	      } else {
-	      	console.log(response);
-	      }
-    });
 
+		var word = $(this).val();
+		$("#wp_api_search_spelling_suggestion").eq(0).val(word).trigger("input");
+	 
 	});
 
 
 
-	function suggested_spelling(word) {
-		if(google_search_api.key && google_search_api.engine_id) {
-			return $.ajax({
-				url: 	google_search_api.endpoint,
-				data: {
-	        	 key: google_search_api.key, 
-	        		 q: word, 
-	        		cx: google_search_api.engine_id,
-	     		fields: 'spelling/correctedQuery' // PULLING ONLY WHAT WE NEED https://developers.google.com/custom-search/json-api/v1/performance
-				},
-	      dataType: 'jsonp'
-			});
-		} else {
-			throw new Error('Google API Key or Engine ID not set');
-		}
-	}
+	if(google_search_api.key && google_search_api.engine_id) {
+		var google_cse_api_url = google_search_api.endpoint + '?key' + google_search_api.key + '&cx=' + google_search_api.engine_id + '&fields=spelling%2FcorrectedQuery' + '&q=%QUERY';
+
+		var spellingSuggestion = function(data) {
+			console.log(data);
+			var arr = [];
+			for(var key in data) {
+				var obj = data[key];
+				if(key == 'spelling') {
+					arr.push({value: obj.correctedQuery});
+				} 
+				// handle error (over quota for the day)
+			}
+			return arr;
+	  };
+
+		var results = new Bloodhound({
+	    datumTokenizer: function(data) {
+	      return Bloodhound.tokenizers.whitespace(data.value)
+	    },
+	    queryTokenizer: Bloodhound.tokenizers.obj.whitespace,
+	    minLength: 5,
+	    remote: {
+	      url: google_cse_api_url,
+	      ajax: $.ajax({type:'GET',dataType:'jsonp' }),
+	      filter: spellingSuggestion
+	    }
+	  });
+
+		results.initialize()
+
+	  $('#wp_api_search_spelling_suggestion').typeahead(null, {
+	    name: 'results',
+	    displayKey: 'value',
+	    source: results.ttAdapter()
+	  }).on('typeahead:selected', function(){
+	  	console.log(obj);
+      console.log(datum);
+      console.log(name);
+	  });
+	} // end of if google api key and engine id are set
+
 
 
 
