@@ -36,6 +36,7 @@ class WP_API_Search_Activator {
 		
 		add_action( 'init', array($this, 'setup_wp_api_search_post_type') );
 		//add_action( 'init', array($this, 'wp_api_search_taxonomy_init') );
+		add_shortcode( 'test', array($this, 'search_results_shortcode'));
 	}
 
 	private function ignore_common_words() {

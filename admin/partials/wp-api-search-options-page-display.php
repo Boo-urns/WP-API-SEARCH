@@ -13,10 +13,25 @@
 
 <div id="wrap">
 <h2>WP API Search Options</h2>    
-<p>Setup options below..</p>    
+<p>Setup options below..</p>
+<?php
+	$active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'general_options';
+?>
+<h2 class="nav-tab-wrapper">
+    <a href="?page=wp-api-search/admin/class-wp-api-search-admin.php&tab=general_options" class="nav-tab <?php echo $active_tab == 'general_options' ? 'nav-tab-active' : ''; ?>">General</a>
+    <a href="?page=wp-api-search/admin/class-wp-api-search-admin.php&tab=suggested_pages_option" class="nav-tab <?php echo $active_tab == 'suggested_pages_option' ? 'nav-tab-active' : ''; ?>">Suggested Pages</a>
+</h2>
 <form method="post" action="options.php" enctype="multipart/form-data">  
-	<?php settings_fields('wpapisearch'); ?>  
-	<?php do_settings_sections('wpapisearch'); ?>  
+	<?php
+		if( $active_tab == 'general_options' ) {
+			settings_fields( 'wpapisearch' );
+			do_settings_sections( 'wpapisearch' ); 
+		} else {
+			echo "";
+			settings_fields( 'suggested' );
+			do_settings_sections( 'suggested' );
+		}
+	?>  
 
 	<p class="submit"><input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" /></p>
 </form>

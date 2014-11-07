@@ -51,7 +51,7 @@ class WP_API_Search_Public {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
+		
 	}
 
 	/**
@@ -95,24 +95,56 @@ class WP_API_Search_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/plugin-name-public.js', array( 'jquery' ), $this->version, false );
 		
-		wp_enqueue_script('typeahead', plugin_dir_url( __FILE__ ) . 'js/typeahead.js', array( 'jquery' ), '', true);
+		wp_enqueue_script('typeahead', plugin_dir_url( __FILE__ ) . 'js/typeahead.js', array( 'jquery' ), '', false);
 
-		wp_enqueue_script('wp-api-search-lookup', plugin_dir_url( __FILE__ ) . 'js/wp-api-search-lookup.js', array( 'jquery' ), $this->version, true);
+		wp_enqueue_script('wp-api-search-lookup', plugin_dir_url( __FILE__ ) . 'js/wp-api-search-lookup.js', array( 'jquery' ), $this->version, false);
 
+		$options_arr = $this->options_arr();
+		wp_localize_script('wp-api-search-lookup', 'wp_api_search_vars', $options_arr);
+	}
+
+
+	public function cancel_query( $query ) {
+ 			
+ 			wp_enqueue_script( 'wp-api-search-page-lookup', plugin_dir_url( __FILE__ ) . 'js/wp-api-search-page-lookup.js', array( 'jquery' ), $this->version, true );
+
+ 			//wp_localize_script('wp-api-search-page-lookup', )
+
+	    if ( !is_admin() && !is_feed() && is_search() ) {
+	        $query = false;
+	    }
+	 
+	    return $query;
+	}
+
+	private function options_arr() {
 		$options_arr = array(
 			'google_api_key',
 			'google_search_engine_id',
 			'wp_api_search_post_types',
+			'posts_per_page',
 		);
 
 		$options_assc_arr = array();
 		foreach($options_arr as $k=>$v) {
 			$options_assc_arr[$v] = get_option($v);
 		}
-		wp_localize_script('wp-api-search-lookup', 'wp_api_search_vars', $options_assc_arr);
+
+		return $options_assc_arr;
+	}
+ 
+
+ 	public function my_search_excerpt( $content ) {
+    if ( is_search() ) {
+        $content = 'This is a search excerpt for ' . get_the_title();
+        // maybe add a read more link
+        // also, you can use global $post to access the current search result
+    }
+   //return test($content);
 	}
 
+	public function search_results_shortcode(){
+		echo "FROM THE FUNCTION";
+	}
 }

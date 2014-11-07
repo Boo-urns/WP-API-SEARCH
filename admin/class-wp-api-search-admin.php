@@ -152,10 +152,11 @@ class WP_API_Search_Admin {
 	public function register_and_build_setting_fields() {
 
 		add_settings_section('main_section', '', array($this, 'section_cb'), 'wpapisearch');
+		add_settings_section('suggested_section', '', array($this, 'section_cb'), 'suggested');
+
 		// add_settings_section - id, title, callback, page
 
 		// The settings labels (id, arg is created from these)
-		// TO DO
 		foreach($this->settings_arr as $k=>$v){ 
 				foreach($this->settings_arr->$k as $id => $val) {
 						add_settings_field(
@@ -175,6 +176,39 @@ class WP_API_Search_Admin {
 				}
 		}
 
+		// Suggested page suggested post settings
+		add_settings_field(
+				'suggested_posts',
+				'Suggested Pages',
+				array( $this, 'suggested_fields' ),
+				'suggested',
+				'suggested_section',
+				array( 'suggested_posts' )
+		);
+
+		register_setting(
+			'suggested',
+			'suggested_posts',
+			array( $this, 'validate_setting' )
+		);
+
+
+		// Common Words Ignored
+		$label = ucwords(implode(' ', explode('_', $this->common_words)));
+		add_settings_field(
+			$this->common_words,
+			$label,
+			array( $this, 'common_words_textarea'),
+			'wpapisearch',
+			'main_section',
+			array( $this->common_words )
+		);
+
+		register_setting(
+			'wpapisearch',
+			$this->common_words,
+			array( $this, 'validate_textarea_to_arr' )
+		);
 	}
 
 	public function setting_fields($args) {
@@ -183,7 +217,56 @@ class WP_API_Search_Admin {
 		echo "<input name='$args[0]' type='text' value='$option' />";
 	}
 
+	public function suggested_fields($args) {
 
+		$post_types = get_option('wp_api_search_post_types');
+		$option = (array) get_option($args[0]); 
+
+		foreach($post_types as $type) {
+			echo '<section class="suggested_posts"><h3>' . strtoupper($type) . '</h3>';
+			echo '<ul style="-webkit-column-count: 2;">';
+			$type_query = new WP_Query( array( 
+				'post_type' => $type,
+				'orderby' => 'title',
+				'order'		=> 'ASC',
+				'post_status' => 'publish',
+				'posts_per_page' => -1,
+				)
+			);
+
+			while($type_query->have_posts() ) {
+				$type_query->the_post();
+				$title = get_the_title();
+				$id = get_the_ID();
+			?>
+
+			<li>
+				<input type="checkbox" id="<?php echo $title; ?>" name="<?php echo $args[0]; ?>[]" value="<?php echo $id; ?>" <?php if(in_array($id, $option)) { echo "checked"; } ?>>
+				<label for="<?php echo $title; ?>"><?php echo $title; ?></label>
+			</li>
+			
+			<?php
+			}
+
+			echo '</ul></section>';
+			wp_reset_postdata();
+		}
+
+	}
+
+	public function common_words_textarea($args) {
+		$option = (array) get_option($args[0]);
+		$option_str = '';
+
+
+		foreach($option as $val) {
+			$option_str .= $val . ', ';
+		}
+		
+		$option_str = substr($option_str, 0, -2);
+
+		echo "<textarea name='$args[0]' style='width: 80%; height: 250px;'>$option_str</textarea>";
+	}
 		/**
 		* Register and build setting post type fields
 		*
@@ -221,7 +304,7 @@ class WP_API_Search_Admin {
 
 		$post_types = get_post_types( $post_type_args, $output, $operator ); 
 
-		$option = get_option($args[0]);
+		$option = (array) get_option($args[0]);
 
 		foreach ( $post_types  as $post_type ) { ?>
 
@@ -233,7 +316,12 @@ class WP_API_Search_Admin {
 
 	}
 
-	public function validate_setting($options) {  
+	public function validate_textarea_to_arr($options) {
+		$options = explode(', ', $options);
+		return $options;
+	}
+
+	public function validate_setting($options) { 
 		return $options;
 	}
 

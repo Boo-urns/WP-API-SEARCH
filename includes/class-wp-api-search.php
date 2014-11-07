@@ -188,6 +188,10 @@ class WP_API_Search {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
+		$this->loader->add_action( 'posts_request', $plugin_public, 'cancel_query' );
+
+		$this->loader->add_filter( 'get_the_content', $plugin_public, 'my_search_excerpt');
+
 	}
 
 	/**
