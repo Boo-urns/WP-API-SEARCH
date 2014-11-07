@@ -51,7 +51,9 @@ class WP_API_Search_Public {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-		
+		// update shortcode properly
+		add_shortcode('say-hello-world', array($this, 'doMyShortcode'));
+
 	}
 
 	/**
@@ -144,7 +146,11 @@ class WP_API_Search_Public {
    //return test($content);
 	}
 
-	public function search_results_shortcode(){
+	public function shortcode(){
 		echo "FROM THE FUNCTION";
+	}
+
+	public function doMyShortcode() {
+    return 'Hello Word!';
 	}
 }
