@@ -100,7 +100,7 @@ class WP_API_Search_Public {
 		
 		wp_enqueue_script('typeahead', plugin_dir_url( __FILE__ ) . 'js/typeahead.js', array( 'jquery' ), '', false);
 
-		wp_enqueue_script('wp-api-search-lookup', plugin_dir_url( __FILE__ ) . 'js/wp-api-search-lookup.js', array( 'jquery' ), $this->version, false);
+		wp_enqueue_script('wp-api-search-lookup', plugin_dir_url( __FILE__ ) . 'js/wp-api-search-lookup.js', array( 'jquery' ), $this->version, true);
 
 		$options_arr = $this->options_arr();
 		wp_localize_script('wp-api-search-lookup', 'wp_api_search_vars', $options_arr);
