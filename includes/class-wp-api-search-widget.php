@@ -31,9 +31,9 @@ class wp_api_search_widget extends WP_Widget {
 		$placeholder = apply_filters( 'widget_title', $instance['placeholder'] );
 		// before and after widget arguments are defined by themes
 		echo $args['before_widget'];
-
-		echo "<form id='wp_api_search'><label for='wp_api_search_widget'>Search</label>
-					<input type='text' id='wp_api_search_input' name='wp_api_search_widget' placeholder='$placeholder'>
+		$siteURL = get_site_url();
+		echo "<form id='wp_api_search' action='$siteURL' method='GET'><label for='wp_api_search_widget'>Search</label>
+					<input type='text' id='wp_api_search_input' name='s' placeholder='$placeholder'>
 					<input type='text' id='wp_api_search_spelling_suggestion' name='wp_api_search_spelling_suggestion' style=''>
 					<input type='submit' id='wp_api_search_submit' value='Search'></form>";
 

@@ -6,13 +6,13 @@
 		'engine_id': wp_api_search_vars.google_search_engine_id
 	}
 	
-	$('#wp_api_search_submit').on('click', function(e){
-		e.preventDefault();
-		var search_term = $('input[name="wp_api_search_widget"]').val();
+	// $('#wp_api_search_submit').on('click', function(e){
+	// 	e.preventDefault();
+	// 	var search_term = $('input[name="wp_api_search_widget"]').val();
 		
-		var search_word = suggested_spelling(search_term);
+	// 	var search_word = suggested_spelling(search_term);
 
-	});
+	// });
 
 
 

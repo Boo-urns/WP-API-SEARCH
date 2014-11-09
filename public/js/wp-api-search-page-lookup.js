@@ -26,6 +26,7 @@ var urlParams;
 		wp_api_query_str += '&type[]=' + post_types[k]
 	});
 
+	//wp_api_query_str += '&filter[page]=2';
 	// posts per page from localize script on wp-api-search-lookup
 	//wp_api_query_str += '&filter[posts_per_page]=1';
 
@@ -42,10 +43,13 @@ var urlParams;
 
 		$.each(data, function(k, v) {
 			var specificProps = {
-				title: data[k].title
+				title: data[k].title,
+				content: data[k].content,
+				excerpt: data[k].excerpt,
+				date: data[k].date,
 			};
 																					// will be highlighted content section
-			specificProps.content = data[k].content;
+			//specificProps.content = data[k].content;
 			
 			if(data[k].featured_image !== null) {
 				//console.log(data[k].featured_image.attachment_meta.sizes.thumbnail.url);
@@ -56,7 +60,19 @@ var urlParams;
 		});
 
 		console.log(response);
+		var output = '';
+		$.each(response, function(k, v) {
+			// Look up moment.js or Date
+			// var date = Date.parse(response[k].date);
+			// date = new Date(date);
+			// console.log(date.getFullMonth());
 
+
+			output += '<article><h2>' + response[k].title + '</h2>';
+			output += '<p>' + response[k].excerpt + '</p>';
+			output += '</article>';
+		})
+		$('#wp-api-search-results').append(output);
 	});
 
 })( jQuery );

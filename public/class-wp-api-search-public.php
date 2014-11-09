@@ -52,7 +52,7 @@ class WP_API_Search_Public {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		// update shortcode properly
-		add_shortcode('say-hello-world', array($this, 'doMyShortcode'));
+		add_shortcode('wp-api-search-results', array($this, 'output_results'));
 
 	}
 
@@ -99,19 +99,16 @@ class WP_API_Search_Public {
 		 */
 		
 		wp_enqueue_script('typeahead', plugin_dir_url( __FILE__ ) . 'js/typeahead.js', array( 'jquery' ), '', false);
+		$options_arr = $this->options_arr();
+		wp_localize_script('typeahead', 'wp_api_search_vars', $options_arr);
 
 		wp_enqueue_script('wp-api-search-lookup', plugin_dir_url( __FILE__ ) . 'js/wp-api-search-lookup.js', array( 'jquery' ), $this->version, true);
 
-		$options_arr = $this->options_arr();
-		wp_localize_script('wp-api-search-lookup', 'wp_api_search_vars', $options_arr);
+		
 	}
 
 
 	public function cancel_query( $query ) {
- 			
- 			wp_enqueue_script( 'wp-api-search-page-lookup', plugin_dir_url( __FILE__ ) . 'js/wp-api-search-page-lookup.js', array( 'jquery' ), $this->version, true );
-
- 			//wp_localize_script('wp-api-search-page-lookup', )
 
 	    if ( !is_admin() && !is_feed() && is_search() ) {
 	        $query = false;
@@ -146,11 +143,15 @@ class WP_API_Search_Public {
    //return test($content);
 	}
 
-	public function shortcode(){
-		echo "FROM THE FUNCTION";
-	}
 
-	public function doMyShortcode() {
-    return 'Hello Word!';
+	public function output_results() {
+		wp_enqueue_script( 'wp-api-search-page-lookup', plugin_dir_url( __FILE__ ) . 'js/wp-api-search-page-lookup.js', array( 'jquery' ), $this->version, true );
+		
+		// Possibly move options_arr to wp-api-search-lookup
+		$wp_options_arr = array('posts_per_page' => get_option('posts_per_page'));
+		
+		wp_localize_script('wp-api-search-page-lookup', 'wp_options', $wp_options_arr);
+
+    return '<section id="wp-api-search-results">Loading Results</section>';
 	}
 }
