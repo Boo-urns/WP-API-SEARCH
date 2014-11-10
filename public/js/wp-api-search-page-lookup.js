@@ -17,21 +17,16 @@ var urlParams;
 (function($) {
 	// search term
 	var wp_api_query_str = '?filter[s]=' + urlParams.s;
-
 	// pulling post types from localize script on wp-api-search-lookup.
 	var post_types = wp_api_search_vars.wp_api_search_post_types;
 
+	wp_api_query_str += '&page=1';
 	// setting up multiple post types
 	$.each(post_types, function(k, v) {
 		wp_api_query_str += '&type[]=' + post_types[k]
 	});
 
-	//wp_api_query_str += '&filter[page]=2';
-	// posts per page from localize script on wp-api-search-lookup
-	//wp_api_query_str += '&filter[posts_per_page]=1';
-
-	// static for now..need to make endpoint dynamic
-	var wp_api_url = 'http://localhost:8080/wp-json/posts';
+	var wp_api_url = wp_api_search_vars.site_url + '/wp-json/posts';
 
 	$.ajax({
 		url: wp_api_url + wp_api_query_str,

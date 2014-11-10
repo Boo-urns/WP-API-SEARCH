@@ -191,11 +191,6 @@ class WP_API_Search {
 
 		$this->loader->add_action( 'posts_request', $plugin_public, 'cancel_query' );
 
-		$this->loader->add_filter( 'get_the_content', $plugin_public, 'my_search_excerpt');
-
-		//$this->loader->add_action( 'init', $plugin_public, 'wp_api_search_results' );
-
-
 	}
 
 	/**

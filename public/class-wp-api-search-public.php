@@ -100,6 +100,7 @@ class WP_API_Search_Public {
 		
 		wp_enqueue_script('typeahead', plugin_dir_url( __FILE__ ) . 'js/typeahead.js', array( 'jquery' ), '', false);
 		$options_arr = $this->options_arr();
+
 		wp_localize_script('typeahead', 'wp_api_search_vars', $options_arr);
 
 		wp_enqueue_script('wp-api-search-lookup', plugin_dir_url( __FILE__ ) . 'js/wp-api-search-lookup.js', array( 'jquery' ), $this->version, true);
@@ -121,8 +122,7 @@ class WP_API_Search_Public {
 		$options_arr = array(
 			'google_api_key',
 			'google_search_engine_id',
-			'wp_api_search_post_types',
-			'posts_per_page',
+			'wp_api_search_post_types'
 		);
 
 		$options_assc_arr = array();
@@ -130,27 +130,14 @@ class WP_API_Search_Public {
 			$options_assc_arr[$v] = get_option($v);
 		}
 
+		$options_assc_arr['site_url'] = get_site_url();
 		return $options_assc_arr;
 	}
  
 
- 	public function my_search_excerpt( $content ) {
-    if ( is_search() ) {
-        $content = 'This is a search excerpt for ' . get_the_title();
-        // maybe add a read more link
-        // also, you can use global $post to access the current search result
-    }
-   //return test($content);
-	}
-
 
 	public function output_results() {
 		wp_enqueue_script( 'wp-api-search-page-lookup', plugin_dir_url( __FILE__ ) . 'js/wp-api-search-page-lookup.js', array( 'jquery' ), $this->version, true );
-		
-		// Possibly move options_arr to wp-api-search-lookup
-		$wp_options_arr = array('posts_per_page' => get_option('posts_per_page'));
-		
-		wp_localize_script('wp-api-search-page-lookup', 'wp_options', $wp_options_arr);
 
     return '<section id="wp-api-search-results">Loading Results</section>';
 	}
