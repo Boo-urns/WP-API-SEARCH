@@ -139,6 +139,6 @@ class WP_API_Search_Public {
 	public function output_results() {
 		wp_enqueue_script( 'wp-api-search-page-lookup', plugin_dir_url( __FILE__ ) . 'js/wp-api-search-page-lookup.js', array( 'jquery' ), $this->version, true );
 
-    return '<section id="wp-api-search-results">Loading Results</section>';
+    return '<section id="wp-api-search-results"></section>';
 	}
 }

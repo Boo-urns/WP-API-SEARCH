@@ -34,48 +34,31 @@ var urlParams;
 		
 	}).done(function(data) {
 		console.log(data);
-		var response = [];
+		var output = '';
 
 		$.each(data, function(k, v) {
-			var specificProps = {
-				title: data[k].title,
-				content: data[k].content,
-				excerpt: data[k].excerpt,
-				date: data[k].date,
-			};
-			
-			if(data[k].featured_image !== null) {
-				specificProps.thumbnail = data[k].featured_image.attachment_meta.sizes.thumbnail.url;
-			}
-
-			response.push(specificProps);
-		});
-
-		console.log(response);
-		var output = '';
-		$.each(response, function(k, v) {
-			// Look up moment.js or Date
-			// var date = Date.parse(response[k].date);
-			// date = new Date(date);
-			// console.log(date.getFullMonth());
-
 
 			output += '<article>';
 			
 			// featured image thumbnail
-			if(response[k].thumbnail !== undefined) {
-				output += "<img src='" + response[k].thumbnail + "' style='float: left; margin-right: 20px;'>";
+			if(data[k].featured_image !== null) {
+				output += "<img src='" + data[k].featured_image.attachment_meta.sizes.thumbnail.url + "' style='float: left; margin-right: 20px;'>";
 			}
 			
 			// title
-			output += '<h2 style="clear: none;">' + highlightTerm(response[k].title, urlParams.s) + '</h2>';
+			output += '<h2 style="clear: none;">' + 
+									"<a href='" + data[k].link + "'>" +
+									highlightTerm(data[k].title, urlParams.s) + 
+									'</a>' + 
+								'</h2>';
 			
 			// excerpt
-			output +=  highlightTerm(response[k].excerpt, urlParams.s);
+			output +=  highlightTerm(data[k].excerpt, urlParams.s);
 			
 			output += '</article>';
-		})
-		
+
+		});
+
 		$('#wp-api-search-results').append(output);
 	
 	});
