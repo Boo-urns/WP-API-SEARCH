@@ -43,11 +43,8 @@ var urlParams;
 				excerpt: data[k].excerpt,
 				date: data[k].date,
 			};
-																					// will be highlighted content section
-			//specificProps.content = data[k].content;
 			
 			if(data[k].featured_image !== null) {
-				//console.log(data[k].featured_image.attachment_meta.sizes.thumbnail.url);
 				specificProps.thumbnail = data[k].featured_image.attachment_meta.sizes.thumbnail.url;
 			}
 
@@ -63,11 +60,46 @@ var urlParams;
 			// console.log(date.getFullMonth());
 
 
-			output += '<article><h2>' + response[k].title + '</h2>';
-			output += '<p>' + response[k].excerpt + '</p>';
+			output += '<article>';
+			
+			// featured image thumbnail
+			if(response[k].thumbnail !== undefined) {
+				output += "<img src='" + response[k].thumbnail + "' style='float: left; margin-right: 20px;'>";
+			}
+			
+			// title
+			output += '<h2 style="clear: none;">' + highlightTerm(response[k].title, urlParams.s) + '</h2>';
+			
+			// excerpt
+			output +=  highlightTerm(response[k].excerpt, urlParams.s);
+			
 			output += '</article>';
 		})
+		
 		$('#wp-api-search-results').append(output);
+	
 	});
 
 })( jQuery );
+
+
+/* 
+ * Highlight search term
+ * 
+ * @parameters content string and search term(s)
+ * @returns string with search term wrapped with marked element
+ *
+*/
+function highlightTerm(content, term) {
+	term_arr = term.split(' ');
+
+	term_arr.forEach(function(v, k){
+		var find = new RegExp(v, 'gi'); //gi = global, ignore case
+	 	content = content.replace(find, function(match) {
+	 			return '<mark>' + match + '</mark>';
+	 		}
+	 	); 
+	});
+
+	return content;
+}
