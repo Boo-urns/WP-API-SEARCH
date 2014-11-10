@@ -122,7 +122,8 @@ class WP_API_Search_Public {
 		$options_arr = array(
 			'google_api_key',
 			'google_search_engine_id',
-			'wp_api_search_post_types'
+			'wp_api_search_post_types',
+			'posts_per_page',
 		);
 
 		$options_assc_arr = array();
@@ -139,6 +140,6 @@ class WP_API_Search_Public {
 	public function output_results() {
 		wp_enqueue_script( 'wp-api-search-page-lookup', plugin_dir_url( __FILE__ ) . 'js/wp-api-search-page-lookup.js', array( 'jquery' ), $this->version, true );
 
-    return '<section id="wp-api-search-results"></section>';
+    return '<section id="wp-api-search-results"></section><button id="wp-api-search-more">Load More</button>';
 	}
 }
