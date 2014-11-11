@@ -45,10 +45,16 @@
 		}
 	).keypress(function(e) {
 		if ( 13 == e.which ) {
-			$(this).parents( 'form' ).submit();
+			submitSearch($(this));
 			return false;
 		}
-	}).on('typeahead:empty', function () { // typeahead:empty is a custom method. (not in typeahead.js)
+	}).on('typeahead:autocompleted', function() {
+		submitSearch($(this));
+	
+	}).on('typeahead:selected', function() {
+		submitSearch($(this));
+
+	}).on('typeahead:empty', function () { // typeahead:empty is a custom method. (not in typeahead.js) called from empty property in templates.
 
 		var word = $(this).val();
 		$("#wp_api_search_spelling_suggestion").eq(0).val(word).trigger("input");
@@ -99,7 +105,13 @@
 	  });
 	} // end of if google api key and engine id are set
 
-
-
-
 })( jQuery );
+
+// submitSearch
+// argument $(this)
+// submits the search 
+function submitSearch(t) {
+	var searchTerm = t.val();
+	t.val(searchTerm.toLowerCase());
+	t.parents('form').submit();
+}

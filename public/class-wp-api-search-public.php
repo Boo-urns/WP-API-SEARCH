@@ -111,11 +111,11 @@ class WP_API_Search_Public {
 
 	public function cancel_query( $query ) {
 
-	    if ( !is_admin() && !is_feed() && is_search() ) {
-	        $query = false;
-	    }
-	 
-	    return $query;
+    if ( !is_admin() && !is_feed() && is_search() ) {
+        $query = false;
+    }
+ 
+    return $query;
 	}
 
 	private function options_arr() {
@@ -140,6 +140,6 @@ class WP_API_Search_Public {
 	public function output_results() {
 		wp_enqueue_script( 'wp-api-search-page-lookup', plugin_dir_url( __FILE__ ) . 'js/wp-api-search-page-lookup.js', array( 'jquery' ), $this->version, true );
 
-    return '<section id="wp-api-search-results"></section><button id="wp-api-search-more">Load More</button>';
+    return '<section id="wp-api-search-results"><h1>Search Results for <span></span></h1></section><button id="wp-api-search-more">Load More</button>';
 	}
 }

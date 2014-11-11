@@ -37,10 +37,12 @@ var urlParams;
 
 	var wp_api_url = wp_api_search_vars.site_url + '/wp-json/posts';
 
+	$('#wp-api-search-results').find('h1 > span').text(urlParams.s);
 	wp_api_lookup();
 
-
+	// Click handler for the more button
 	$('#wp-api-search-more').on('click', $(this), wp_api_lookup);
+
 
 
 	function wp_api_lookup() {
@@ -51,7 +53,16 @@ var urlParams;
 			method: 'GET',
 			
 		}).done(function(data) {
-			console.log(data);
+			// HIDE MORE button if results length is not == posts_per_page
+			if(data.length !== parseInt(wp_api_search_vars.posts_per_page)) {
+				$('#wp-api-search-more').hide();
+			}
+
+			if(data.length == 0 && page == 1) {
+				$('#wp-api-search-results').append('<p>No results.</p>');
+				return;
+			} 
+
 			var output = '<div id="wp-api-search-page'+page+'">';
 
 			$.each(data, function(k, v) {
@@ -79,23 +90,33 @@ var urlParams;
 
 			output += '</div>';
 
-			// Full URL for history api
-			var historyURL = wp_api_search_vars.site_url + '?s=' + urlParams.s + '&page=' + page;
-			// Add an item to the history log
-		  history.pushState(null, null, historyURL);
-
+			// Append results
 			$('#wp-api-search-results').append(output);
-			page++;
 
+
+			// If loading from history
 			if(typeof loadingPage !== 'undefined') {
 				if(loadingPage < currentPage) { 
 					loadingPage++;
-					wp_api_lookup();
+					wp_api_lookup(); // call the function again to provide results until currentPage (can't alter posts_per_page without being authenticated.)
+
 				} else {
 					// scroll to the current page.
-					$("html, body").animate({ scrollTop: $('#wp-api-search-page'+(page-1)).offset().top - 50 }, 1000);
+					$("html, body").animate({ scrollTop: $('#wp-api-search-page' + loadingPage).offset().top - 50 }, 1000);
+					loadingPage = undefined;
+				}
+			} else {
+				if(data.length > 0) {
+
+					// Full URL for history api
+					var historyURL = wp_api_search_vars.site_url + '?s=' + urlParams.s + '&page=' + page;
+					// Add an item to the history log
+				  history.pushState(null, null, historyURL);
 				}
 			}
+
+			page++;
+
 		});
 
 	}
@@ -106,7 +127,7 @@ var urlParams;
 /* 
  * Highlight search term
  * 
- * @parameters content string and search term(s)
+ * @param string content and string search term(s)
  * @returns string with search term wrapped with mark element
  *
 */
