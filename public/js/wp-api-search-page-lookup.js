@@ -21,11 +21,13 @@ var urlParams;
 	var post_types = wp_api_search_vars.wp_api_search_post_types;
 
 	var page = urlParams.page ? urlParams.page : 1;
-	
+	var currentPage = page;
 	var posts_per_page = wp_api_search_vars.posts_per_page;
 
 	if(page > 1) {
 		posts_per_page *= page;	
+		var loadingPage = 1;
+		page = 1;
 	}
 
 	// setting up multiple post types
@@ -42,15 +44,10 @@ var urlParams;
 
 
 	function wp_api_lookup() {
-		var num_posts = '';
-		if(posts_per_page > wp_api_search_vars.posts_per_page) {
-			num_posts = '&posts_per_page=' + posts_per_page;
-		}
-
 		var query_page = '&page=' + page;
 
 		$.ajax({
-			url: wp_api_url + wp_api_query_str + query_page + num_posts,
+			url: wp_api_url + wp_api_query_str + query_page,
 			method: 'GET',
 			
 		}).done(function(data) {
@@ -89,10 +86,18 @@ var urlParams;
 
 			$('#wp-api-search-results').append(output);
 			page++;
+
+			if(typeof loadingPage !== 'undefined') {
+				if(loadingPage < currentPage) { 
+					loadingPage++;
+					wp_api_lookup();
+				} else {
+					// scroll to the current page.
+					$("html, body").animate({ scrollTop: $('#wp-api-search-page'+(page-1)).offset().top - 50 }, 1000);
+				}
+			}
 		});
 
-		// reset posts_per_page
-		posts_per_page = wp_api_search_vars.posts_per_page;
 	}
 
 })( jQuery );
@@ -102,7 +107,7 @@ var urlParams;
  * Highlight search term
  * 
  * @parameters content string and search term(s)
- * @returns string with search term wrapped with marked element
+ * @returns string with search term wrapped with mark element
  *
 */
 function highlightTerm(content, term) {
