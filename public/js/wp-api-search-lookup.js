@@ -6,13 +6,15 @@
 		'engine_id': wp_api_search_vars.google_search_engine_id
 	}
 	
-	// $('#wp_api_search_submit').on('click', function(e){
-	// 	e.preventDefault();
-	// 	var search_term = $('input[name="wp_api_search_widget"]').val();
-		
-	// 	var search_word = suggested_spelling(search_term);
 
-	// });
+
+	$('#wp_api_search_submit').on('click', function(e){
+		e.preventDefault();
+	 	var search_term = $('input[name="wp_api_search_widget"]').val();
+		
+		submitSearch($('#wp_api_search_input'))	
+
+	});
 
 
 
@@ -45,8 +47,8 @@
 		}
 	).keypress(function(e) {
 		if ( 13 == e.which ) {
+			e.preventDefault();
 			submitSearch($(this));
-			return false;
 		}
 	}).on('typeahead:autocompleted', function() {
 		submitSearch($(this));
@@ -103,15 +105,30 @@
       console.log(datum);
       console.log(name);
 	  });
-	} // end of if google api key and engine id are set
+	} // end of if google api key and engine id are set\
+
+
+	// submitSearch
+	// @param $(this) element
+	// removes common words and submits form
+	function submitSearch(t) {
+		var searchTerm = t.val();
+		$('#full_search').val(searchTerm);
+
+		// remove common words from search
+		searchTerm = removeCommonWords(searchTerm);
+		
+		t.val(searchTerm);
+		t.parents('form').submit();
+	}
 
 })( jQuery );
 
-// submitSearch
-// argument $(this)
-// submits the search 
-function submitSearch(t) {
-	var searchTerm = t.val();
-	t.val(searchTerm.toLowerCase());
-	t.parents('form').submit();
+
+
+
+function removeCommonWords(s) {
+    var words = wp_api_search_vars.common_words_ignored;
+    var re = new RegExp('\\b(' + words.join('|') + ')\\b', 'gi');
+    return (s || '').replace(re, '').replace(/[ ]{2,}/, ' ').trim();
 }

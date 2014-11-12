@@ -101,6 +101,8 @@ class WP_API_Search_Public {
 		wp_enqueue_script('typeahead', plugin_dir_url( __FILE__ ) . 'js/typeahead.js', array( 'jquery' ), '', false);
 		$options_arr = $this->options_arr();
 
+		$options_arr['ajaxurl'] = admin_url( 'admin-ajax.php' );
+		//$options_arr['nonce'] = wp_create_nonce( "save_search_term_nonce" );
 		wp_localize_script('typeahead', 'wp_api_search_vars', $options_arr);
 
 		wp_enqueue_script('wp-api-search-lookup', plugin_dir_url( __FILE__ ) . 'js/wp-api-search-lookup.js', array( 'jquery' ), $this->version, true);
@@ -124,6 +126,7 @@ class WP_API_Search_Public {
 			'google_search_engine_id',
 			'wp_api_search_post_types',
 			'posts_per_page',
+			'common_words_ignored',
 		);
 
 		$options_assc_arr = array();
@@ -136,8 +139,71 @@ class WP_API_Search_Public {
 	}
  
 
+	public function save_search_term() {
+		$results = wp_kses(isset($_POST['results']), array());
+		if(!$results) {
+			// if results is false go get the suggested pages to return.
+			$suggested_pages = get_option('suggested_posts');
+
+
+			$args = array( 
+				'post__in' => $suggested_pages, 
+				'post_type' => get_option('wp_api_search_post_types'),
+				'posts_per_page' => -1, 
+				'orderby' => 'post_type',
+				'nopaging' => true,
+			);
+			$suggested = new WP_Query($args);
+
+			$suggested_output = array();
+			$lastPostType = '';
+			$output = '';
+
+			// The Suggested Loop
+			while ( $suggested->have_posts() ) {
+				$suggested->the_post();
+				$id = get_the_ID();
+				$title = get_the_title();
+				$img = get_the_post_thumbnail($id, 'thumbnail');
+				$link = get_permalink($id);
+				$excerpt = get_the_excerpt();
+				$postType = get_post_type($id);
+
+
+				if($postType !== $lastPostType) {
+					if($lastPostType !== '') {
+						$output .= '</section>';
+					}
+					$output .= '<section>';
+					$output .= '<h1>Suggested ' . $postType .'s</h1>';
+				}
+
+				$output .= '<article>';
+				if($img) {
+					$output .= $img;
+				}
+				$output .= '<h2 style="clear: none;"><a href="' . $link . '">' . $title . '</a></h2>';
+				$output .= $excerpt;
+				$output .= '</article>';
+				
+
+				$lastPostType = $postType;
+			}
+
+			$output .= '</section>';
+			$suggested_output[] = $output;
+			wp_send_json_success( $suggested_output );
+		} else {
+			// save the search term 
+			//$full_search_term = wp_kses($_POST['full_search'], array());
+			//$search_term = wp_kses($_POST['term'], array());
+			//echo json_encode('results!');
+		}
+		
+	}
 
 	public function output_results() {
+
 		wp_enqueue_script( 'wp-api-search-page-lookup', plugin_dir_url( __FILE__ ) . 'js/wp-api-search-page-lookup.js', array( 'jquery' ), $this->version, true );
 
     return '<section id="wp-api-search-results"><h1>Search Results for <span></span></h1></section><button id="wp-api-search-more">Load More</button>';

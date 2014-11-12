@@ -15,6 +15,10 @@ var urlParams;
 
 
 (function($) {
+
+	// log full search into custom post type
+	var full_search = urlParams.full_search;
+
 	// search term
 	var wp_api_query_str = '?filter[s]=' + urlParams.s;
 	// pulling post types from localize script on wp-api-search-lookup.
@@ -58,41 +62,62 @@ var urlParams;
 				$('#wp-api-search-more').hide();
 			}
 
-			if(data.length == 0 && page == 1) {
-				$('#wp-api-search-results').append('<p>No results.</p>');
-				return;
-			} 
-
-			var output = '<div id="wp-api-search-page'+page+'">';
-
-			$.each(data, function(k, v) {
-
-				output += '<article>';
-				
-				// featured image thumbnail
-				if(data[k].featured_image !== null) {
-					output += "<img src='" + data[k].featured_image.attachment_meta.sizes.thumbnail.url + "' style='float: left; margin-right: 20px;'>";
+			if(data.length == 0) {
+				if(page == 1) {
+					$.ajax({
+						type: 'POST',
+						url: wp_api_search_vars.ajaxurl,
+						data: {action: 'save_search_term'},
+						dataType: 'json'
+					}).always(function(data) {
+							$('#wp-api-search-results').append('<p>No results for ' + urlParams.s + '<br>' + 'Here are some suggested pages</p>');
+					    $('#wp-api-search-results').append(data.data);
+					});
+					return false;
 				}
-				
-				// title
-				output += '<h2 style="clear: none;">' + 
-										"<a href='" + data[k].link + "'>" +
-										highlightTerm(data[k].title, urlParams.s) + 
-										'</a>' + 
-									'</h2>';
-				
-				// excerpt
-				output +=  highlightTerm(data[k].excerpt, urlParams.s);
-				
-				output += '</article>';
+			} else { // Results!
+				if(page == 1) { // saving search term only on first page.
+					$.ajax({
+						type: 'POST',
+						url: wp_api_search_vars.ajaxurl,
+						data: {action: 'save_search_term', results: true, term: urlParams.s, fullTerm: full_search},
+						dataType: 'json'
+					}).always(function(data) {
+					    
+					});
+				}
+			
 
-			});
+				var output = '<div id="wp-api-search-page'+page+'">';
 
-			output += '</div>';
+				$.each(data, function(k, v) {
 
-			// Append results
-			$('#wp-api-search-results').append(output);
+					output += '<article>';
+					
+					// featured image thumbnail
+					if(data[k].featured_image !== null) {
+						output += "<img src='" + data[k].featured_image.attachment_meta.sizes.thumbnail.url + "' style='float: left; margin-right: 20px;'>";
+					}
+					
+					// title
+					output += '<h2 style="clear: none;">' + 
+											"<a href='" + data[k].link + "'>" +
+											highlightTerm(data[k].title, urlParams.s) + 
+											'</a>' + 
+										'</h2>';
+					
+					// excerpt
+					output +=  highlightTerm(data[k].excerpt, urlParams.s);
+					
+					output += '</article>';
 
+				});
+
+				output += '</div>';
+
+				// Append results
+				$('#wp-api-search-results').append(output);
+			}
 
 			// If loading from history
 			if(typeof loadingPage !== 'undefined') {
@@ -102,7 +127,7 @@ var urlParams;
 
 				} else {
 					// scroll to the current page.
-					$("html, body").animate({ scrollTop: $('#wp-api-search-page' + loadingPage).offset().top - 50 }, 1000);
+					$("html, body").animate({ scrollTop: $('#wp-api-search-page' + loadingPage).offset().top - 50 }, 100);
 					loadingPage = undefined;
 				}
 			} else {
