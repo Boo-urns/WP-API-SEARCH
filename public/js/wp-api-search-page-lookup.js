@@ -94,7 +94,18 @@ var urlParams;
 					
 					// featured image thumbnail
 					if(data[k].featured_image !== null) {
-						output += "<img src='" + data[k].featured_image.attachment_meta.sizes.thumbnail.url + "' style='float: left; margin-right: 20px;'>";
+						var img;
+						if(data[k].featured_image.attachment_meta.sizes.hasOwnProperty('thumbnail')) {
+							img = data[k].featured_image.attachment_meta.sizes.thumbnail.url;
+						}
+						else {
+							if(data[k].featured_image.attachment_meta.file) {
+								img = data[k].featured_image.guid;
+							}
+						}
+						if(img) {
+							output += "<img src='" + img + "' style='float: left; margin-right: 20px;' alt='" + data[k].featured_image.title + "'>";
+						}
 					}
 					
 					// title
@@ -108,7 +119,7 @@ var urlParams;
 					if(data[k].excerpt !== null) {
 						output +=  highlightTerm(data[k].excerpt, urlParams.s);
 					}
-					
+
 					output += '</article>';
 
 				});
