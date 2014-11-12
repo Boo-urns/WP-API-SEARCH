@@ -105,7 +105,9 @@ var urlParams;
 										'</h2>';
 					
 					// excerpt
-					output +=  highlightTerm(data[k].excerpt, urlParams.s);
+					if(data[k].excerpt !== null) {
+						output +=  highlightTerm(data[k].excerpt, urlParams.s);
+					}
 					
 					output += '</article>';
 
