@@ -43,7 +43,7 @@ if( class_exists( 'WP_API_Search_Activator' ) ) {
   	//register_activation_hook( __FILE__, array( 'WP_API_Search_Activator', 'activate' ) );
 }
 
-/** This action is documented in includes/class-plugin-name-deactivator.php */
+/** This action is documented in includes/class-wp-api-search-deactivator.php */
 register_deactivation_hook( __FILE__, array( 'WP_API_Search_Deactivator', 'deactivate' ) );
 
 

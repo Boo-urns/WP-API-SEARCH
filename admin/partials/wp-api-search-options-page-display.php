@@ -18,8 +18,9 @@
 	$active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'general_options';
 ?>
 <h2 class="nav-tab-wrapper">
-    <a href="?page=wp-api-search/admin/class-wp-api-search-admin.php&tab=general_options" class="nav-tab <?php echo $active_tab == 'general_options' ? 'nav-tab-active' : ''; ?>">General</a>
-    <a href="?page=wp-api-search/admin/class-wp-api-search-admin.php&tab=suggested_pages_option" class="nav-tab <?php echo $active_tab == 'suggested_pages_option' ? 'nav-tab-active' : ''; ?>">Suggested Pages</a>
+
+    <a href="?post_type=wp-api-search-term&page=class-wp-api-search-admin.php&tab=general_options" class="nav-tab <?php echo $active_tab == 'general_options' ? 'nav-tab-active' : ''; ?>">General</a>
+    <a href="?post_type=wp-api-search-term&page=class-wp-api-search-admin.php&tab=suggested_pages_option" class="nav-tab <?php echo $active_tab == 'suggested_pages_option' ? 'nav-tab-active' : ''; ?>">Suggested Pages</a>
 </h2>
 <form method="post" action="options.php" enctype="multipart/form-data">  
 	<?php

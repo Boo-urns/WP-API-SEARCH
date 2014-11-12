@@ -120,7 +120,9 @@ class WP_API_Search_Admin {
 	 */
 	public function create_setting_options_page() {
 
-		add_options_page('WP API Search', 'WP API Search', 'administrator', __FILE__, array($this, 'build_setting_options_page'));
+		//add_options_page('WP API Search', 'WP API Search', 'administrator', __FILE__, array($this, 'build_setting_options_page'));
+		//add_action(‘admin_menu’ , ‘brdesign_enable_pages’);
+		add_submenu_page('edit.php?post_type=wp-api-search-term', 'WP API Search Admin', 'Settings', 'edit_posts', basename(__FILE__), array($this, 'build_setting_options_page'));
 
 	}
 

@@ -20,14 +20,12 @@
  * @subpackage wp-api-search/includes
  * @author     Corey Burns <coreyaburns@gmail.com>
  */
-class Plugin_Name_Deactivator {
+class WP_API_Search_Deactivator {
 
 	/**
-	 * Short Description. (use period)
+	 * Removing shortcode.
 	 *
-	 * Long Description.
-	 *
-	 * @since    1.0.0
+	 * @since    0.0.1
 	 */
 	public static function deactivate() {
 		remove_shortcode( 'wp-api-search-results' );

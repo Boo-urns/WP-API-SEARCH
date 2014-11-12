@@ -69,7 +69,7 @@ class WP_API_Search_Activator {
 	    'public'        => true,
 	    'exclude_from_search' => false,
 	    'show_ui'				=> true,
-	    'menu_position' => 100,
+	    'menu_position' => 50,
 	    'supports'      => array('title', 'custom fields', 'page-attributes'),
 	  );
 	  register_post_type( 'wp-api-search-term', $args ); 
