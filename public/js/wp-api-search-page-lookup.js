@@ -82,8 +82,6 @@ var urlParams;
 						url: wp_api_search_vars.ajaxurl,
 						data: {action: 'save_search_term', results: true, term: urlParams.s, fullTerm: full_search},
 						dataType: 'json'
-					}).always(function(data) {
-					    
 					});
 				}
 			
