@@ -150,56 +150,50 @@ class WP_API_Search_Public {
 	public function save_search_term() {
 		$results = wp_kses(isset($_POST['results']), array());
 
-		if(!$results) {
-			// if results is false go get the suggested pages.
-			$this->return_suggested_posts();
+		// save the search term 
 
-		} else {
-			// save the search term 
+		$slug = strtolower(implode('-', explode(' ', wp_kses($_POST['term'], array()))));
+		$args = array(
+			'post_type' => 'wp-api-search-term',
+			'name' => $slug,
+		);
 
-			$slug = strtolower(implode('-', explode(' ', wp_kses($_POST['term'], array()))));
-			$args = array(
-				'post_type' => 'wp-api-search-term',
-				'name' => $slug,
-			);
+		$termQuery = new WP_Query($args);
 
-			$termQuery = new WP_Query($args);
+		// should always be 1 if there is a match.
+		if($termQuery->post_count == 1) { 
+			// UPDATE search term (increment menu_order)
+			while( $termQuery->have_posts() ) {
+				$termQuery->the_post();
+				$menu_order = get_post_field( 'menu_order', get_the_ID(), true );
+				$menu_order++;
 
-			if($termQuery->post_count == 1) {
-				// UPDATE search term (increment menu_order)
-				while( $termQuery->have_posts() ) {
-					$termQuery->the_post();
-					$menu_order = get_post_field( 'menu_order', get_the_ID(), true );
-					$menu_order++;
-
-					$term_post = array(
-					  'ID' => get_the_ID(),
-					  'menu_order' => $menu_order
-					);
-
-					// Update the post into the database
-					wp_update_post( $term_post );
-					wp_send_json_success('updated post');
-				}
-			} else {
-				// INSERT new Search term
-				$term = wp_strip_all_tags($_POST['term']);
-
-				// Create post object
-				$new_term_post = array(
-				  'post_title'  => $term,
-				  'post_name'  	=> $slug,
-				  'post_type'   => 'wp-api-search-term',
-				  'post_status' => 'publish',
+				$term_post = array(
+				  'ID' => get_the_ID(),
+				  'menu_order' => $menu_order
 				);
 
-				// Insert the post into the database
-				wp_insert_post( $new_term_post );
-
-				wp_send_json_success('inserted new post');
+				// Update the post into the database
+				wp_update_post( $term_post );
+				wp_send_json_success('updated post');
 			}
+		} else {
+			// INSERT new Search term
+			$term = wp_strip_all_tags($_POST['term']);
+
+			// Create post object
+			$new_term_post = array(
+			  'post_title'  => $term,
+			  'post_name'  	=> $slug,
+			  'post_type'   => 'wp-api-search-term',
+			  'post_status' => 'publish',
+			);
+
+			// Insert the post into the database
+			wp_insert_post( $new_term_post );
+
+			wp_send_json_success('inserted new post');
 		}
-		
 	}
 
 	/**

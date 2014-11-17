@@ -50,6 +50,9 @@ var urlParams;
 
 
 	function wp_api_lookup() {
+		if(typeof loadingPage !== 'undefined') {
+			page = loadingPage;
+		}
 		var query_page = '&page=' + page;
 
 		$.ajax({
@@ -63,11 +66,12 @@ var urlParams;
 			}
 
 			if(data.length == 0) {
-				if(page == 1) {
+				if(page == 1) {	
+					// Return suggested posts.
 					$.ajax({
 						type: 'POST',
 						url: wp_api_search_vars.ajaxurl,
-						data: {action: 'save_search_term'},
+						data: {action: 'return_suggested_posts'},
 						dataType: 'json'
 					}).always(function(data) {
 							$('#wp-api-search-results').append('<p>No results for ' + urlParams.s + '<br>' + 'Here are some suggested pages</p>');
@@ -76,7 +80,8 @@ var urlParams;
 					return false;
 				}
 			} else { // Results!
-				if(page == 1) { // saving search term only on first page.
+				if(page == 1) { 
+					// saving search term only on first page.
 					$.ajax({
 						type: 'POST',
 						url: wp_api_search_vars.ajaxurl,
@@ -84,9 +89,11 @@ var urlParams;
 						dataType: 'json'
 					});
 				}
-			
-
-				var output = '<div id="wp-api-search-page'+page+'">';
+				
+				var output = (typeof loadingPage !== undefined) 
+												? '<div id="wp-api-search-page'+loadingPage+'">'
+												: '<div id="wp-api-search-page'+page+'">';
+												
 
 				$.each(data, function(k, v) {
 
@@ -140,18 +147,18 @@ var urlParams;
 					// scroll to the current page.
 					$("html, body").animate({ scrollTop: $('#wp-api-search-page' + loadingPage).offset().top - 50 }, 100);
 					loadingPage = undefined;
+					page++;
 				}
 			} else {
-				if(data.length > 0) {
+					if(data.length > 0) {
 
-					// Full URL for history api
-					var historyURL = wp_api_search_vars.site_url + '?s=' + urlParams.s + '&page=' + page;
-					// Add an item to the history log
-				  history.pushState(null, null, historyURL);
-				}
+						// Full URL for history api
+						var historyURL = wp_api_search_vars.site_url + '?s=' + urlParams.s + '&page=' + page;
+						// Add an item to the history log
+					  history.pushState(null, null, historyURL);
+					}
+				page++;
 			}
-
-			page++;
 
 		});
 
