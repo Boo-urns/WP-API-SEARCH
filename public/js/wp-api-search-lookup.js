@@ -130,5 +130,13 @@
 function removeCommonWords(s) {
     var words = wp_api_search_vars.common_words_ignored;
     var re = new RegExp('\\b(' + words.join('|') + ')\\b', 'gi');
-    return (s || '').replace(re, '').replace(/[ ]{2,}/, ' ').trim();
+    var replaced = (s || '').replace(re, '').replace(/[ ]{2,}/, ' ').trim();
+
+    // Don't want to search on empty string!
+    if (replaced === '') {
+    	replaced = s;
+    }
+
+    return replaced;
+
 }

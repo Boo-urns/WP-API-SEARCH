@@ -192,9 +192,11 @@ class WP_API_Search {
 		// cancel default wordpress query on search page
 		$this->loader->add_action( 'posts_request', $plugin_public, 'cancel_query' );
 
+		// save search term
 		$this->loader->add_action( 'wp_ajax_nopriv_save_search_term', $plugin_public, 'save_search_term');
 		$this->loader->add_action('wp_ajax_save_search_term', $plugin_public, 'save_search_term');
 
+		// provide suggested pages
 		$this->loader->add_action( 'wp_ajax_nopriv_return_suggested_posts', $plugin_public, 'return_suggested_posts');
 		$this->loader->add_action('wp_ajax_return_suggested_posts', $plugin_public, 'return_suggested_posts');
 	}
