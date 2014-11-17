@@ -66,7 +66,7 @@
 
 
 	if(google_search_api.key && google_search_api.engine_id) {
-		var google_cse_api_url = google_search_api.endpoint + '?key' + google_search_api.key + '&cx=' + google_search_api.engine_id + '&fields=spelling%2FcorrectedQuery' + '&q=%QUERY';
+		var google_cse_api_url = google_search_api.endpoint + '?key=' + google_search_api.key + '&cx=' + google_search_api.engine_id + '&fields=spelling%2FcorrectedQuery' + '&q=%QUERY';
 
 		var spellingSuggestion = function(data) {
 			console.log(data);
@@ -123,7 +123,6 @@
 	}
 
 })( jQuery );
-
 
 
 
