@@ -1,21 +1,31 @@
 (function($) {
+	// add spellcheck attribute to input 
+	$('#wp-api-search-input').focus(function(){
+		// need it as a listener because typeahead is setting it to false
+		$(this).attr('spellcheck', 'true');
+		$(this).unbind('focus'); // destroy event listener
+	});
+	
 
 	var google_search_api = {
 		'endpoint': 'https://www.googleapis.com/customsearch/v1',
 		'key': wp_api_search_vars.google_api_key,
 		'engine_id': wp_api_search_vars.google_search_engine_id
 	}
-	
-
 
 	$('#wp_api_search_submit').on('click', function(e){
 		e.preventDefault();
 	 	var search_term = $('input[name="wp_api_search_widget"]').val();
 		
-		submitSearch($('#wp_api_search_input'))	
+		submitSearch($('#wp-api-search-input'));
 
 	});
 
+
+	// clear spelling suggestion input on search focus
+	$('#wp-api-search-input').change(function(){
+		$('#wp-api-search-spelling-suggestion').val('');
+	});
 
 
 	// typeahead bloodhound 
@@ -29,7 +39,7 @@
 	 
 	postsLookup.initialize();
 
-	$('#wp_api_search_input').typeahead(
+	$('#wp-api-search-input').typeahead(
 		{
 			highlight: true,
 	  	minLength: 3,
@@ -41,7 +51,7 @@
 		  source: postsLookup.ttAdapter(),
 		  templates: {
 		  	empty: function(){
-		  		$('#wp_api_search_input').trigger('typeahead:empty');
+		  		$('#wp-api-search-input').trigger('typeahead:empty');
 		  	},
 		  }
 		}
@@ -59,7 +69,7 @@
 	}).on('typeahead:empty', function () { // typeahead:empty is a custom method. (not in typeahead.js) called from empty property in templates.
 
 		var word = $(this).val();
-		$("#wp_api_search_spelling_suggestion").eq(0).val(word).trigger("input");
+		$("#wp-api-search-spelling-suggestion").eq(0).val(word).trigger("input");
 	 
 	});
 
@@ -96,7 +106,7 @@
 
 		results.initialize()
 
-	  $('#wp_api_search_spelling_suggestion').typeahead(null, {
+	  $('#wp-api-search-spelling-suggestion').typeahead(null, {
 	    name: 'results',
 	    displayKey: 'value',
 	    source: results.ttAdapter()

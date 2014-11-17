@@ -32,11 +32,16 @@ class wp_api_search_widget extends WP_Widget {
 		// before and after widget arguments are defined by themes
 		echo $args['before_widget'];
 		$siteURL = get_site_url();
-		echo "<form id='wp_api_search' action='$siteURL' method='GET'><label for='wp_api_search_widget'>Search</label>
-					<input type='text' id='wp_api_search_input' name='s' placeholder='$placeholder'>
-					<input type='text' id='wp_api_search_spelling_suggestion' name='wp_api_search_spelling_suggestion' disabled>
+		echo "<form id='wp_api_search' action='$siteURL' method='GET'>
+					<label for='wp_api_search_widget'>Search</label>
+					<input type='text' id='wp-api-search-input' name='s' placeholder='$placeholder' spellcheck='true'>
+					<div id='wp-api-search-suggested-wrapper'>
+					<input type='text' id='wp-api-search-spelling-suggestion' name='wp_api_search_spelling_suggestion' disabled>
+					</div>
+					<input type='submit' id='wp_api_search_submit' value='Search'>
 					<input type='hidden' id='full_search' name='full_search'>
-					<input type='submit' id='wp_api_search_submit' value='Search'></form>";
+					
+				</form>";
 
 		// This is where you run the code and display the output
 		echo $args['after_widget'];
