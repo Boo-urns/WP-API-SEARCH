@@ -38,9 +38,8 @@ class wp_api_search_widget extends WP_Widget {
 					<div id='wp-api-search-suggested-wrapper'>
 					<input type='text' id='wp-api-search-spelling-suggestion' name='wp_api_search_spelling_suggestion' disabled>
 					</div>
-					<input type='submit' id='wp_api_search_submit' value='Search'>
 					<input type='hidden' id='full_search' name='full_search'>
-					
+					<input type='submit' id='wp_api_search_submit' value='Search'>
 				</form>";
 
 		// This is where you run the code and display the output

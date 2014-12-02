@@ -111,9 +111,7 @@
 	    displayKey: 'value',
 	    source: results.ttAdapter()
 	  }).on('typeahead:selected', function(){
-	  	console.log(obj);
-      console.log(datum);
-      console.log(name);
+	  	console.log($(this));
 	  });
 	} // end of if google api key and engine id are set\
 

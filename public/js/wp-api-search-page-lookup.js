@@ -90,11 +90,10 @@ var urlParams;
 					});
 				}
 				
-				var output = (typeof loadingPage !== undefined) 
+				var output = (typeof loadingPage === undefined) 
 												? '<div id="wp-api-search-page'+loadingPage+'">'
 												: '<div id="wp-api-search-page'+page+'">';
-												
-
+				
 				$.each(data, function(k, v) {
 
 					output += '<article>';
@@ -114,6 +113,9 @@ var urlParams;
 							output += "<img src='" + img + "' style='float: left; margin-right: 20px;' alt='" + data[k].featured_image.title + "'>";
 						}
 					}
+
+					// div wrapper for easy styling
+					output += '<div>';
 					
 					// title
 					output += '<h2 style="clear: none;">' + 
@@ -127,6 +129,7 @@ var urlParams;
 						output +=  highlightTerm(data[k].excerpt, urlParams.s);
 					}
 
+					output += '</div>';
 					output += '</article>';
 
 				});
@@ -175,15 +178,40 @@ var urlParams;
  *
 */
 function highlightTerm(content, term) {
+	var find = new RegExp(term, 'gi'); //gi = global, ignore case
+	content = content.replace(find, function(match){ 
+		return '<mark>' + match + '</mark>';
+	});
+
 	term_arr = term.split(' ');
 
 	term_arr.forEach(function(v, k){
+		// not preceded with mark element
 		var find = new RegExp(v, 'gi'); //gi = global, ignore case
+	 
 	 	content = content.replace(find, function(match) {
+	 		 
 	 			return '<mark>' + match + '</mark>';
 	 		}
 	 	); 
 	});
 
 	return content;
+}
+
+
+function getSelectionParentElement() {
+    var parentEl = null, sel;
+    if (window.getSelection) {
+        sel = window.getSelection();
+        if (sel.rangeCount) {
+            parentEl = sel.getRangeAt(0).commonAncestorContainer;
+            if (parentEl.nodeType != 1) {
+                parentEl = parentEl.parentNode;
+            }
+        }
+    } else if ( (sel = document.selection) && sel.type != "Control") {
+        parentEl = sel.createRange().parentElement();
+    }
+    return parentEl;
 }

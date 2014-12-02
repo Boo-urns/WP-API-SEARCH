@@ -18,7 +18,7 @@ input#wp-api-search-input {
 #wp-api-search-suggested-wrapper .twitter-typeahead {
 	top: -10px;
 }
-input[name="wp_api_search_spelling_suggestion"] {
+input[name=wp_api_search_spelling_suggestion] {
 	height: 0;
 	width: 0;
 	margin: 0;
