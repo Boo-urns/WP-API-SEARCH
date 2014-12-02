@@ -18,6 +18,15 @@ input#wp-api-search-input {
 #wp-api-search-suggested-wrapper .twitter-typeahead {
 	top: -10px;
 }
+#wp-api-search-results img {
+    float: left; 
+    margin: 10px 20px 0 0;
+}
+#wp-api-search-results article {
+	overflow: auto;
+	clear: both;
+	margin-bottom: 20px;
+}
 input[name=wp_api_search_spelling_suggestion] {
 	height: 0;
 	width: 0;

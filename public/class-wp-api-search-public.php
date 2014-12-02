@@ -220,8 +220,10 @@ class WP_API_Search_Public {
 				if($img) {
 					$output .= $img;
 				}
+				$output .= '<div>';
 				$output .= '<h2 style="clear: none;"><a href="' . $link . '">' . $title . '</a></h2>';
 				$output .= $excerpt;
+				$output .= '</div>';
 				$output .= '</article>';
 				
 
