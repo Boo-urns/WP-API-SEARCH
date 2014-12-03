@@ -74,7 +74,7 @@ var urlParams;
 						data: {action: 'return_suggested_posts'},
 						dataType: 'json'
 					}).always(function(data) {
-							$('#wp-api-search-results').append('<p>No results for ' + urlParams.s + '<br>' + 'Here are some suggested pages</p>');
+							$('#wp-api-search-results').append("<p>Sorry, we couldn't find anything matching \"" + urlParams.s + '"');
 					    $('#wp-api-search-results').append(data.data);
 					});
 					return false;

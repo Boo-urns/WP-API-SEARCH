@@ -33,7 +33,7 @@
 	  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
 	  queryTokenizer: Bloodhound.tokenizers.whitespace,
 	  remote: {
-	  	url: 'http://localhost:8080/wp-json/posts/?type[]=wp-api-search-term&filter[orderby]=menu_order&filter[s]=%QUERY',
+	  	url:  wp_api_search_vars.site_url + '/wp-json/posts/?type[]=wp-api-search-term&filter[orderby]=menu_order&filter[s]=%QUERY',
 	  }
 	});
 	 
