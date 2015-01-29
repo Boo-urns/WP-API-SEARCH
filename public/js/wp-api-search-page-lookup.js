@@ -20,7 +20,7 @@ var urlParams;
 	var full_search = urlParams.full_search;
 
 	// search term
-	var wp_api_query_str = '?filter[s]=' + urlParams.s;
+	var wp_api_query_str = '?filter[s]=' + urlParams.s + '&filter[orderby]=menu_order';
 	// pulling post types from localize script on wp-api-search-lookup.
 	var post_types = wp_api_search_vars.wp_api_search_post_types;
 
@@ -99,7 +99,7 @@ var urlParams;
 					output += '<article>';
 					
 					// featured image thumbnail
-					if(data[k].featured_image !== null) {
+					if(data[k].featured_image !== null && data[k].featured_image.hasOwnProperty('attachment_meta')) {
 						var img;
 						if(data[k].featured_image.attachment_meta.sizes.hasOwnProperty('thumbnail')) {
 							img = data[k].featured_image.attachment_meta.sizes.thumbnail.url;

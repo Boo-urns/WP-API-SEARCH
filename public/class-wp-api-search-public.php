@@ -188,7 +188,7 @@ class WP_API_Search_Public {
 				'post__in' => $suggested_pages, 
 				'post_type' => get_option('wp_api_search_post_types'),
 				'posts_per_page' => -1, 
-				'orderby' => 'post_type',
+				'orderby' => 'menu_order post_type',
 				'nopaging' => true,
 			);
 			$suggested = new WP_Query($args);
