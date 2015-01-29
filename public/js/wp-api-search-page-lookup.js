@@ -156,7 +156,7 @@ var urlParams;
 					if(data.length > 0) {
 
 						// Full URL for history api
-						var historyURL = wp_api_search_vars.site_url + '?s=' + urlParams.s + '&page=' + page;
+						var historyURL = wp_api_search_vars.site_url + '/?s=' + urlParams.s + '&page=' + page;
 						// Add an item to the history log
 					  history.pushState(null, null, historyURL);
 					}
