@@ -20,7 +20,7 @@ var urlParams;
 	var full_search = urlParams.full_search;
 
 	// search term
-	var wp_api_query_str = '?filter[s]=' + urlParams.s + '&filter[orderby]=menu_order';
+	var wp_api_query_str = '?filter[s]=' + urlParams.s + '&filter[orderby]=menu_order%20date';
 	// pulling post types from localize script on wp-api-search-lookup.
 	var post_types = wp_api_search_vars.wp_api_search_post_types;
 
